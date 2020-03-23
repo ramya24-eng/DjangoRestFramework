@@ -24,14 +24,14 @@ class Profilepost(models.Model):
         return self.title
 
 class News(models.Model):
-    source = models.CharField(max_length=1000)
-    author = models.CharField(max_length=100)
-    title = models.CharField(max_length=100)
-    description=models.CharField(max_length=5000)
+    source = models.CharField(max_length=800,null=True)
+    author = models.CharField(max_length=1000,null=True)
+    title = models.CharField(max_length=2000,null=True)
+    description=models.TextField(null=True)
     url=models.URLField(blank=True,null=True)
-    urlToImage=models.ImageField(upload_to ='img/',default='img/None/no-img.jpg')
-    publishedAt=models.DateTimeField(blank=True,null=True)
-    content=models.CharField(max_length=7000)
+    urltoimage=models.ImageField(upload_to ='img/',default='img/None/no-img.jpg')
+    publishedat=models.DateTimeField(blank=True,null=True)
+    content=models.TextField(null=True)
 
     def __str__(self):
         return self.title
