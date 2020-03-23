@@ -29,7 +29,7 @@ class News(models.Model):
     title = models.CharField(max_length=100)
     description=models.CharField(max_length=5000)
     url=models.URLField(blank=True,null=True)
-    urlToImage=models.URLField(blank=True,null=True)
+    urlToImage=models.ImageField(upload_to ='img/',default='img/None/no-img.jpg')
     publishedAt=models.DateTimeField(blank=True,null=True)
     content=models.CharField(max_length=7000)
 

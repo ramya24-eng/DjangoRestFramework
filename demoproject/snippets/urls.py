@@ -5,7 +5,7 @@ urlpatterns = [
      path('',include('djoser.urls')),
      path('',include('djoser.urls.authtoken')),
      path('restricted/',views.restricted),
-     path('news/', views.news),
+     path('generic/news/<int:id>/', views.NewsGenericAPIView.as_view()),
      #path('profilepost/',views.profilepost_list),
      path('profilepost/',views.ProfilepostAPIView.as_view()),
      path('generic/profilepost/<int:id>/',views.GenericAPIView.as_view()),

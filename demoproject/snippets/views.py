@@ -11,11 +11,13 @@ from rest_framework import mixins
 from rest_framework.response import Response
 from django.http import HttpResponse, JsonResponse
 from rest_framework.parsers import JSONParser
-from .models import Profilepost
-from .serializers import ProfilepostSerializer
+from .models import Profilepost,News
+from .serializers import ProfilepostSerializer,NewsSerializer
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.views import APIView
 from newsapi import NewsApiClient
+from rest_framework.pagination import LimitOffsetPagination
+from snippets import newsdb
 
 #create your views here
 @api_view(['GET'])
@@ -135,15 +137,13 @@ class GenericAPIView(generics.GenericAPIView,mixins.ListModelMixin,mixins.Create
         return self.destroy(request,id)
 
 
-def news(request):
-    newsapi = NewsApiClient(api_key="eb543432c3bb4da8af5653c66ca2e805")
-    topheadlines = newsapi.get_everything(
-        domains='bbc.co.uk,techcrunch.com',
-        language='en',
-        sort_by='relevancy')
+class NewsViewPagination(LimitOffsetPagination):
+    default_limit = 2
+    max_limit = 3
 
-    articles = topheadlines['articles']
-    if articles.is_valid():
-       articles.save()
 
-    return JsonResponse(articles.data)
+class NewsGenericAPIView(generics.ListAPIView):
+    queryset = News.objects.all()
+    serializer_class = NewsSerializer
+    pagination_class = NewsViewPagination
+
