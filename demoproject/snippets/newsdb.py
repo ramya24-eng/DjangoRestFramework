@@ -8,11 +8,13 @@ import urllib3
 import psycopg2
 from psycopg2.extensions import AsIs
 from decouple import config
+#require('dotenv').config();
 
 conn = psycopg2.connect(database="djangorestdb", user="postgres", password="postgres123", host="127.0.0.1", port="5432")
 cur = conn.cursor()
 
 newsapi = NewsApiClient(api_key=config('api_key'))
+#newsapi = NewsApiClient(api_key=process.env.api_key)
 topheadlines = newsapi.get_top_headlines(category='business', language='en', country='in')
 articles = topheadlines['articles']
 for i in articles:
