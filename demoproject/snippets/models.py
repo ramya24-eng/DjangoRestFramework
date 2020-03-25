@@ -24,12 +24,13 @@ class Profilepost(models.Model):
         return self.title
 
 class News(models.Model):
+    category = models.CharField(max_length=1000, null=True)
     source = models.CharField(max_length=800,null=True)
     author = models.CharField(max_length=1000,null=True)
     title = models.CharField(max_length=2000,null=True)
     description=models.TextField(null=True)
     url=models.URLField(blank=True,null=True)
-    urltoimage=models.ImageField(upload_to ='img/',default='img/None/no-img.jpg')
+    urltoimage=models.ImageField(upload_to ='img/')
     publishedat=models.DateTimeField(blank=True,null=True)
     content=models.TextField(null=True)
 

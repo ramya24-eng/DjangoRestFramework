@@ -11,8 +11,8 @@ from rest_framework import mixins
 from rest_framework.response import Response
 from django.http import HttpResponse, JsonResponse
 from rest_framework.parsers import JSONParser
-from .models import Profilepost,News
-from .serializers import ProfilepostSerializer,NewsSerializer
+from .models import Profilepost,News,User
+from .serializers import ProfilepostSerializer,NewsSerializer,UserCreateSerializer
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.views import APIView
 from newsapi import NewsApiClient
@@ -25,7 +25,73 @@ from snippets import newsdb
 def restricted(request,*args,**kwargs):
     return Response(data="Only for logged in User", status=status.HTTP_200_OK)
 
+
+
+
 #class based views
+@permission_classes([IsAuthenticated])
+class UserCreateAPIView(APIView):
+    def get(self, request):
+        users = User.objects.all()
+        serializer = UserCreateSerializer(users, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = UserCreateSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@permission_classes([IsAuthenticated])
+class UserCreateDetailAPIView(APIView):
+    def get_object(self, id):
+        try:
+            return User.objects.get(id=id)
+
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    def get(self, request, id):
+        user = self.get_object(id)
+        serializer = UserCreateSerializer(user)
+        return Response(serializer.data)
+
+    def put(self, request, id):
+        user = self.get_object(id)
+        serializer = UserCreateSerializer(user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, id):
+        user = self.get_object(id)
+        user.delete()
+        return Response(data="The respected user get deleted",status=status.HTTP_204_NO_CONTENT)
+
+
+class NewsViewPagination(LimitOffsetPagination):
+    default_limit = 2
+    max_limit = 5
+
+
+class NewsGenericAPIView(generics.ListAPIView):
+    queryset = News.objects.all()
+    serializer_class = NewsSerializer
+    pagination_class = NewsViewPagination
+
+    def get_queryset(self):
+        queryset = News.objects.all()
+        categories = self.request.query_params.get('category','')
+        print (categories)
+        if categories is not None:
+            queryset =  queryset.filter(category = categories)
+        return  queryset
+
+'''
+@permission_classes([IsAuthenticated])
 class ProfilepostAPIView(APIView):
     def get(self,request):
         profileposts = Profilepost.objects.all()
@@ -40,14 +106,14 @@ class ProfilepostAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
+@permission_classes([IsAuthenticated])
 class ProfilepostDetailAPIView(APIView):
     def get_object(self,id):
         try:
             return Profilepost.objects.get(id=id)
 
         except Profilepost.DoesNotExist:
-            return HttpResponse(status=status.HTTP_404_NOT_FOUND)
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
     def get(self, request, id):
          profilepost = self.get_object(id)
@@ -65,51 +131,8 @@ class ProfilepostDetailAPIView(APIView):
     def delete(self,request,id):
         profilepost = self.get_object(id)
         profilepost.delete()
-        return HttpResponse(status=status.HTTP_204_NO_CONTENT)
+        return Response(data="The respected user get deleted",status=status.HTTP_204_NO_CONTENT)
 
-#Function based views
-#Implementing with api_view
-@api_view(['GET','POST'])
-#@csrf_exempt
-def profilepost_list(request):
-    if request.method =='GET':
-        profileposts = Profilepost.objects.all()
-        serializer = ProfilepostSerializer(profileposts,many=True)
-        return Response(serializer.data)
-
-    elif request.method == 'POST':
-        #data = JSONParser().parse(request)
-        serializer =ProfilepostSerializer(data=request.data)
-
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-#implementing without api_view
-@csrf_exempt
-def profilepost_detail(request, pk):
-    try:
-        profilepost = Profilepost.objects.get(pk=pk)
-
-    except Profilepost.DoesNotExist:
-        return HttpResponse(status=404)
-
-    if request.method == 'GET':
-        serializer = ProfilepostSerializer(profilepost)
-        return JsonResponse(serializer.data)
-
-    elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = ProfilepostSerializer(profilepost,data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=400)
-
-    elif request.method == 'DELETE':
-        profilepost.delete()
-        return HttpResponse(status=204)
 
 #generic_views
 class GenericAPIView(generics.GenericAPIView,mixins.ListModelMixin,mixins.CreateModelMixin,mixins.UpdateModelMixin,
@@ -135,15 +158,4 @@ class GenericAPIView(generics.GenericAPIView,mixins.ListModelMixin,mixins.Create
 
     def delete(self, request):
         return self.destroy(request,id)
-
-
-class NewsViewPagination(LimitOffsetPagination):
-    default_limit = 2
-    max_limit = 3
-
-
-class NewsGenericAPIView(generics.ListAPIView):
-    queryset = News.objects.all()
-    serializer_class = NewsSerializer
-    pagination_class = NewsViewPagination
-
+'''

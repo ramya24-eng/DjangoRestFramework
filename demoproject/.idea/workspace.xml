@@ -25,7 +25,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../PycharmProjects/webprojects" />
+    <property name="last_opened_file_path" value="$USER_HOME$/PycharmProjects/webprojects" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -54,22 +54,17 @@
       <screen x="67" y="27" width="1299" height="741" />
     </state>
     <state x="809" y="159" width="424" height="484" key="FileChooserDialogImpl/67.27.1299.741@67.27.1299.741" timestamp="1584616634320" />
-    <state x="372" y="224" key="com.intellij.ide.util.TipDialog" timestamp="1584932893083">
+    <state x="372" y="224" key="com.intellij.ide.util.TipDialog" timestamp="1585111048566">
       <screen x="67" y="27" width="1299" height="741" />
     </state>
-    <state x="372" y="224" key="com.intellij.ide.util.TipDialog/67.27.1299.741@67.27.1299.741" timestamp="1584932893083" />
+    <state x="372" y="224" key="com.intellij.ide.util.TipDialog/67.27.1299.741@67.27.1299.741" timestamp="1585111048566" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/snippets/views.py</url>
-          <line>73</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/snippets/views.py</url>
-          <line>28</line>
+          <line>78</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>

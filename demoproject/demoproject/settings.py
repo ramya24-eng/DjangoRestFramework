@@ -82,11 +82,11 @@ WSGI_APPLICATION = 'demoproject.wsgi.application'
 DATABASES = {
  'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'djangorestdb',
-        'USER': 'postgres',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
         'PASSWORD': config('DB_PASSWORD'),
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT'),
        }
 }
 
@@ -110,7 +110,7 @@ DJOSER = {
    "SERIALIZERS":{
         "user_create":'snippets.serializers.UserCreateSerializer',
         "user":'snippets.serializers.UserCreateSerializer',
-       "current_user":'snippets.serializers.CurrentUserSerializer',
+        "current_user":'snippets.serializers.CurrentUserSerializer',
     },
 }
 # Password validation
