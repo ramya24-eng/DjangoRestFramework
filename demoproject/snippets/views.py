@@ -61,8 +61,8 @@ class UserCreateDetailAPIView(APIView):
         return Response(data="The respected user get deleted",status=status.HTTP_204_NO_CONTENT)
 
 class NewsViewPagination(LimitOffsetPagination):
-    default_limit = 2
-    max_limit = 5
+    default_limit = 10
+    max_limit = 20
 
 
 class NewsGenericAPIView(generics.ListAPIView):
