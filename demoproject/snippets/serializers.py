@@ -8,11 +8,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         fields = ['id', 'email', 'username', 'password', 'first_name', 'last_name', 'phone']
 
 
-class ProfilepostSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Profilepost
-        #fields = ['id', 'title', 'author','email']
-        fields='__all__'
+
 
 
 class NewsSerializer(serializers.ModelSerializer):
@@ -20,9 +16,4 @@ class NewsSerializer(serializers.ModelSerializer):
         model = News
         fields='__all__'
 
-'''
-class UserCreateSerializer(UserCreateSerializer):
-    class Meta(UserCreateSerializer.Meta):
-        model = User
-        fields = ['id','email','username','password', 'first_name', 'last_name', 'phone']
-'''
+

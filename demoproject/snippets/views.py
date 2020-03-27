@@ -20,15 +20,6 @@ from djoser.views import TokenDestroyView
 from .pagination import PaginationView
 
 #create your views here
-'''
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def restricted(request,*args,**kwargs):
-    return Response(data="Only for logged in User", status=status.HTTP_200_OK)
-'''
-class UserLogoutView(TokenDestroyView):
-    def post(self, request):
-        return Response(data="you are logged out",status=status.HTTP_204_NO_CONTENT)
 
 #class based views
 #@permission_classes([IsAuthenticated])
@@ -94,24 +85,4 @@ class NewsAPIView(APIView, PaginationView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-'''
-class NewsViewPagination(LimitOffsetPagination):
-    default_limit = 10
-    max_limit = 20
 
-
-class NewsAPIView(generics.ListAPIView):
-    queryset = News.objects.all()
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-    serializer_class = NewsSerializer
-    pagination_class = NewsViewPagination
-
-    def get_queryset(self):
-        queryset = News.objects.all()
-        categories = self.request.query_params.get('category','')
-        print (categories)
-        if categories is not None:
-            queryset =  queryset.filter(category = categories)
-        return  queryset
-'''
