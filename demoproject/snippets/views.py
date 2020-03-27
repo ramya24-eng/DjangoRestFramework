@@ -1,24 +1,34 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-
+from django.shortcuts import render
 from rest_framework.decorators import api_view,permission_classes
 from rest_framework.authentication import SessionAuthentication,BasicAuthentication,TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from rest_framework import generics
+from rest_framework import mixins
 from rest_framework.response import Response
+from django.http import HttpResponse, JsonResponse
+from rest_framework.parsers import JSONParser
 from .models import Profilepost,News,User
 from .serializers import ProfilepostSerializer,NewsSerializer,UserCreateSerializer
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework.views import APIView
-from rest_framework.pagination import LimitOffsetPagination
-
+from rest_framework.pagination import LimitOffsetPagination,PageNumberPagination
+from djoser.views import TokenDestroyView
+from .pagination import PaginationView
 
 #create your views here
+'''
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def restricted(request,*args,**kwargs):
     return Response(data="Only for logged in User", status=status.HTTP_200_OK)
+'''
+class UserLogoutView(TokenDestroyView):
+    def post(self, request):
+        return Response(data="you are logged out",status=status.HTTP_204_NO_CONTENT)
 
 #class based views
 #@permission_classes([IsAuthenticated])
@@ -38,7 +48,12 @@ class UserCreateAPIView(APIView):
 
 #@permission_classes([IsAuthenticated])
 class UserCreateDetailAPIView(APIView):
+    def get_object(self, id):
+        try:
+            return User.objects.get(id=id)
 
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -60,12 +75,32 @@ class UserCreateDetailAPIView(APIView):
         user.delete()
         return Response(data="The respected user get deleted",status=status.HTTP_204_NO_CONTENT)
 
+class BasicPagination(PageNumberPagination):
+    page_size_query_param = 'limit'
+
+
+class NewsAPIView(APIView, PaginationView):
+    pagination_class = BasicPagination
+    serializer_class = NewsSerializer
+
+    def get(self, request,*args, **kwargs):
+        instance = News.objects.all()
+        page = self.paginate_queryset(instance)
+        if page is not None:
+            serializer = self.get_paginated_response(self.serializer_class(page,
+                                                                           many=True).data)
+        else:
+            serializer = self.serializer_class(instance, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+'''
 class NewsViewPagination(LimitOffsetPagination):
     default_limit = 10
     max_limit = 20
 
 
-class NewsGenericAPIView(generics.ListAPIView):
+class NewsAPIView(generics.ListAPIView):
     queryset = News.objects.all()
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
@@ -79,4 +114,4 @@ class NewsGenericAPIView(generics.ListAPIView):
         if categories is not None:
             queryset =  queryset.filter(category = categories)
         return  queryset
-
+'''
