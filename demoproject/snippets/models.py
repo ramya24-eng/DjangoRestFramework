@@ -6,14 +6,13 @@ from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
 class User(AbstractUser):
-    email = models.EmailField(verbose_name='email', max_length=255, unique=True)
-    phone = models.CharField(null=True, max_length=255)
+    email = models.EmailField(verbose_name='email', max_length=30, unique=True)
+    phone = models.IntegerField(null=True, max_length=10)
     REQUIRED_FIELDS = ['username', 'phone', 'first_name', 'last_name']
     USERNAME_FIELD = 'email'
 
     def get_username(self):
         return self.email
-
 
 class News(models.Model):
     category = models.CharField(max_length=1000, null=True)
@@ -26,6 +25,8 @@ class News(models.Model):
     publishedat=models.DateTimeField(blank=True,null=True)
     content=models.TextField(null=True)
 
+    class Meta:
+        unique_together =[("title","description","content")]
     def __str__(self):
         return self.title
 

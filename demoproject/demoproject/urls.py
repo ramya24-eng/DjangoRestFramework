@@ -21,5 +21,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('checkserver/',index,name='index'),
     path('auth/',include('snippets.urls')),
-    #path('',include('snippets.urls')),
 ]
